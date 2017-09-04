@@ -333,6 +333,12 @@ def deployFrameworks(frameworks, bundlePath, binaryPath, strip, verbose, deploym
             deploymentInfo.detectQtPath(framework.frameworkDirectory)
         
         if framework.installName.startswith("@executable_path") or framework.installName.startswith(bundlePath):
+            if (framework.frameworkName.startswith("libboost_system-mt")):
+                #dirty hack to include system-mt library (need to find a better solution)
+                toDir = os.path.join(bundlePath, framework.destinationDirectory)
+                toPath = os.path.join(toDir, framework.binaryName)
+                shutil.copy2("/usr/local/Cellar/boost/1.65.0/lib/libboost_system-mt.dylib", toPath)
+                continue
             if verbose >= 2:
                 print framework.frameworkName, "already deployed, skipping."
             continue
